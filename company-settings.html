@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Company Settings - Staff Management System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #4361ee;
+            --secondary-color: #3f37c9;
+            --success-color: #06ffa5;
+            --danger-color: #ff006e;
+            --warning-color: #ffbe0b;
+            --dark-color: #2b2d42;
+            --light-bg: #f8f9fa;
+            --border-color: #dee2e6;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px 0;
+        }
+
+        .main-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .header h1 {
+            color: var(--primary-color);
+            font-weight: 700;
+            margin-bottom: 10px;
+            font-size: 2.5rem;
+        }
+
+        .settings-section {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+
+        .section-title {
+            color: var(--primary-color);
+            font-weight: 600;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--border-color);
+            font-size: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: var(--dark-color);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .form-control, .form-select {
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            padding: 12px 15px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.2rem rgba(67, 97, 238, 0.25);
+            outline: none;
+        }
+
+        .btn {
+            border-radius: 10px;
+            padding: 12px 24px;
+            font-weight: 600;
+            border: none;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(67, 97, 238, 0.3);
+        }
+
+        .file-upload-wrapper {
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+            width: 100%;
+        }
+
+        .file-upload-input {
+            position: absolute;
+            left: -9999px;
+        }
+
+        .file-upload-label {
+            display: block;
+            padding: 12px 15px;
+            background: var(--light-bg);
+            border: 2px dashed var(--border-color);
+            border-radius: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .file-upload-label:hover {
+            border-color: var(--primary-color);
+            background: rgba(67, 97, 238, 0.05);
+        }
+
+        .file-preview {
+            margin-top: 10px;
+            padding: 10px;
+            background: var(--light-bg);
+            border-radius: 8px;
+            font-size: 14px;
+            color: var(--dark-color);
+        }
+
+        .logo-preview {
+            width: 150px;
+            height: 150px;
+            border: 3px solid var(--border-color);
+            border-radius: 15px;
+            object-fit: cover;
+            margin-top: 10px;
+        }
+
+        .signature-preview {
+            width: 300px;
+            height: 150px;
+            border: 3px solid var(--border-color);
+            border-radius: 10px;
+            object-fit: cover;
+            margin-top: 10px;
+        }
+
+        .current-settings {
+            background: var(--light-bg);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+        }
+
+        .current-settings h6 {
+            color: var(--primary-color);
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .current-settings p {
+            margin: 5px 0;
+            font-size: 14px;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            margin-bottom: 20px;
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .back-link:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <a href="staff-management.html" class="back-link">
+            <i class="fas fa-arrow-left"></i> Back to Staff Management
+        </a>
+
+        <div class="header">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h1><i class="fas fa-cog"></i> Company Settings</h1>
+                    <p class="text-muted mb-0">Configure your company information and branding</p>
+                </div>
+                <a href="staff-management.html" class="btn btn-primary">
+                    <i class="fas fa-users"></i> Staff Management
+                </a>
+            </div>
+        </div>
+
+        <div class="settings-section">
+            <h2 class="section-title"><i class="fas fa-building"></i> Company Information</h2>
+            
+            <!-- Current Settings Display -->
+            <div class="current-settings" id="currentSettings">
+                <h6><i class="fas fa-info-circle"></i> Current Settings</h6>
+                <div id="currentSettingsContent">
+                    <p><strong>No company settings configured yet.</strong></p>
+                </div>
+            </div>
+
+            <form id="companySettingsForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-building"></i> Company Name
+                        </label>
+                        <input type="text" class="form-control" id="companyName" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-phone"></i> Contact Number
+                        </label>
+                        <input type="tel" class="form-control" id="companyContact" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">
+                        <i class="fas fa-envelope"></i> Email Address
+                    </label>
+                    <input type="email" class="form-control" id="companyEmail" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">
+                        <i class="fas fa-map-marker-alt"></i> Company Address
+                    </label>
+                    <textarea class="form-control" id="companyAddress" rows="3" required></textarea>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-receipt"></i> GSTIN
+                        </label>
+                        <input type="text" class="form-control" id="gstin" maxlength="15" placeholder="29ABCDE1234F1ZV">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-hashtag"></i> PAN Number
+                        </label>
+                        <input type="text" class="form-control" id="panNumber" maxlength="10" placeholder="ABCDE1234F">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">
+                        <i class="fas fa-university"></i> Bank URL
+                    </label>
+                    <input type="url" class="form-control" id="bankUrl" placeholder="https://www.bankwebsite.com">
+                    <small class="text-muted">Enter your bank's website URL for easy access</small>
+                </div>
+            </form>
+        </div>
+
+        <div class="settings-section">
+            <h2 class="section-title"><i class="fas fa-image"></i> Company Branding</h2>
+            
+            <form id="brandingForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-image"></i> Company Logo
+                        </label>
+                        <div class="file-upload-wrapper">
+                            <input type="file" class="file-upload-input" id="companyLogo" accept=".jpg,.jpeg,.png,.gif">
+                            <label for="companyLogo" class="file-upload-label">
+                                <i class="fas fa-cloud-upload-alt"></i> Choose Logo (JPG, PNG, GIF)
+                            </label>
+                        </div>
+                        <div id="logoPreview" class="file-preview" style="display: none;"></div>
+                        <img id="logoImagePreview" class="logo-preview" style="display: none;">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-signature"></i> Digital Signature
+                        </label>
+                        <div class="file-upload-wrapper">
+                            <input type="file" class="file-upload-input" id="digitalSignature" accept=".jpg,.jpeg,.png">
+                            <label for="digitalSignature" class="file-upload-label">
+                                <i class="fas fa-cloud-upload-alt"></i> Choose Signature (JPG, PNG)
+                            </label>
+                        </div>
+                        <div id="signaturePreview" class="file-preview" style="display: none;"></div>
+                        <img id="signatureImagePreview" class="signature-preview" style="display: none;">
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div class="settings-section">
+            <h2 class="section-title"><i class="fas fa-save"></i> Save Settings</h2>
+            
+            <div class="d-grid gap-2 d-md-flex justify-content-md-start">
+                <button type="button" class="btn btn-primary" onclick="saveCompanySettings()">
+                    <i class="fas fa-save"></i> Save All Settings
+                </button>
+                <button type="button" class="btn btn-secondary" onclick="resetSettings()">
+                    <i class="fas fa-undo"></i> Reset to Default
+                </button>
+                <button type="button" class="btn btn-info" onclick="exportSettings()">
+                    <i class="fas fa-download"></i> Export Settings
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            loadCompanySettings();
+            setupEventListeners();
+        });
+
+        // Setup Event Listeners
+        function setupEventListeners() {
+            // Auto case conversion for company name
+            document.getElementById('companyName').addEventListener('input', function(e) {
+                e.target.value = e.target.value.toUpperCase();
+            });
+
+            // Auto case conversion for GSTIN and PAN
+            document.getElementById('gstin').addEventListener('input', function(e) {
+                e.target.value = e.target.value.toUpperCase();
+            });
+
+            document.getElementById('panNumber').addEventListener('input', function(e) {
+                e.target.value = e.target.value.toUpperCase();
+            });
+
+            // Auto lowercase for email
+            document.getElementById('companyEmail').addEventListener('input', function(e) {
+                e.target.value = e.target.value.toLowerCase();
+            });
+
+            // File upload handlers
+            document.getElementById('companyLogo').addEventListener('change', (e) => handleFileUpload(e, 'logo'));
+            document.getElementById('digitalSignature').addEventListener('change', (e) => handleFileUpload(e, 'signature'));
+        }
+
+        // Load Company Settings
+        function loadCompanySettings() {
+            const settings = JSON.parse(localStorage.getItem('companySettings')) || {};
+            
+            if (settings.companyName) {
+                // Load form fields
+                document.getElementById('companyName').value = settings.companyName || '';
+                document.getElementById('companyContact').value = settings.companyContact || '';
+                document.getElementById('companyEmail').value = settings.companyEmail || '';
+                document.getElementById('companyAddress').value = settings.companyAddress || '';
+                document.getElementById('gstin').value = settings.gstin || '';
+                document.getElementById('panNumber').value = settings.panNumber || '';
+                document.getElementById('bankUrl').value = settings.bankUrl || '';
+
+                // Load logo
+                if (settings.companyLogoData) {
+                    document.getElementById('logoImagePreview').src = settings.companyLogoData;
+                    document.getElementById('logoImagePreview').style.display = 'block';
+                    document.getElementById('logoPreview').innerHTML = `
+                        <i class="fas fa-check-circle text-success"></i> ${settings.companyLogoName || 'Logo uploaded'}
+                    `;
+                    document.getElementById('logoPreview').style.display = 'block';
+                }
+
+                // Load signature
+                if (settings.digitalSignatureData) {
+                    document.getElementById('signatureImagePreview').src = settings.digitalSignatureData;
+                    document.getElementById('signatureImagePreview').style.display = 'block';
+                    document.getElementById('signaturePreview').innerHTML = `
+                        <i class="fas fa-check-circle text-success"></i> ${settings.digitalSignatureName || 'Signature uploaded'}
+                    `;
+                    document.getElementById('signaturePreview').style.display = 'block';
+                }
+
+                // Update current settings display
+                updateCurrentSettingsDisplay(settings);
+            }
+        }
+
+        // Update Current Settings Display
+        function updateCurrentSettingsDisplay(settings) {
+            const content = document.getElementById('currentSettingsContent');
+            
+            if (settings.companyName) {
+                content.innerHTML = `
+                    <p><strong>Company:</strong> ${settings.companyName}</p>
+                    <p><strong>Contact:</strong> ${settings.companyContact}</p>
+                    <p><strong>Email:</strong> ${settings.companyEmail}</p>
+                    <p><strong>Address:</strong> ${settings.companyAddress}</p>
+                    <p><strong>GSTIN:</strong> ${settings.gstin || 'Not provided'}</p>
+                    <p><strong>PAN:</strong> ${settings.panNumber || 'Not provided'}</p>
+                    <p><strong>Bank URL:</strong> ${settings.bankUrl ? `<a href="${settings.bankUrl}" target="_blank" style="color: var(--primary-color); text-decoration: none;">${settings.bankUrl} <i class="fas fa-external-link-alt"></i></a>` : 'Not provided'}</p>
+                    <p><strong>Logo:</strong> ${settings.companyLogoName ? '✓ Uploaded' : 'Not uploaded'}</p>
+                    <p><strong>Signature:</strong> ${settings.digitalSignatureName ? '✓ Uploaded' : 'Not uploaded'}</p>
+                `;
+            } else {
+                content.innerHTML = '<p><strong>No company settings configured yet.</strong></p>';
+            }
+        }
+
+        // Handle File Upload
+        function handleFileUpload(e, type) {
+            const file = e.target.files[0];
+            
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    const result = event.target.result;
+                    
+                    if (type === 'logo') {
+                        document.getElementById('logoImagePreview').src = result;
+                        document.getElementById('logoImagePreview').style.display = 'block';
+                        document.getElementById('logoPreview').innerHTML = `
+                            <i class="fas fa-check-circle text-success"></i> ${file.name}
+                            <button type="button" class="btn btn-sm btn-danger ms-2" onclick="clearFile('companyLogo', 'logo')">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        `;
+                        document.getElementById('logoPreview').style.display = 'block';
+                    } else if (type === 'signature') {
+                        document.getElementById('signatureImagePreview').src = result;
+                        document.getElementById('signatureImagePreview').style.display = 'block';
+                        document.getElementById('signaturePreview').innerHTML = `
+                            <i class="fas fa-check-circle text-success"></i> ${file.name}
+                            <button type="button" class="btn btn-sm btn-danger ms-2" onclick="clearFile('digitalSignature', 'signature')">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        `;
+                        document.getElementById('signaturePreview').style.display = 'block';
+                    }
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // Clear File
+        function clearFile(inputId, type) {
+            document.getElementById(inputId).value = '';
+            
+            if (type === 'logo') {
+                document.getElementById('logoImagePreview').style.display = 'none';
+                document.getElementById('logoPreview').style.display = 'none';
+                document.getElementById('logoPreview').innerHTML = '';
+            } else if (type === 'signature') {
+                document.getElementById('signatureImagePreview').style.display = 'none';
+                document.getElementById('signaturePreview').style.display = 'none';
+                document.getElementById('signaturePreview').innerHTML = '';
+            }
+        }
+
+        // Save Company Settings
+        function saveCompanySettings() {
+            const formData = {
+                companyName: document.getElementById('companyName').value,
+                companyContact: document.getElementById('companyContact').value,
+                companyEmail: document.getElementById('companyEmail').value,
+                companyAddress: document.getElementById('companyAddress').value,
+                gstin: document.getElementById('gstin').value,
+                panNumber: document.getElementById('panNumber').value,
+                bankUrl: document.getElementById('bankUrl').value,
+                lastUpdated: new Date().toISOString()
+            };
+
+            // Handle logo upload
+            const logoFile = document.getElementById('companyLogo').files[0];
+            if (logoFile) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    formData.companyLogoData = e.target.result;
+                    formData.companyLogoName = logoFile.name;
+                    saveSettingsData(formData);
+                };
+                reader.readAsDataURL(logoFile);
+            } else {
+                // Keep existing logo if any
+                const existingSettings = JSON.parse(localStorage.getItem('companySettings')) || {};
+                if (existingSettings.companyLogoData) {
+                    formData.companyLogoData = existingSettings.companyLogoData;
+                    formData.companyLogoName = existingSettings.companyLogoName;
+                }
+                saveSettingsData(formData);
+            }
+
+            // Handle signature upload
+            const signatureFile = document.getElementById('digitalSignature').files[0];
+            if (signatureFile) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    formData.digitalSignatureData = e.target.result;
+                    formData.digitalSignatureName = signatureFile.name;
+                    saveSettingsData(formData);
+                };
+                reader.readAsDataURL(signatureFile);
+            } else {
+                // Keep existing signature if any
+                const existingSettings = JSON.parse(localStorage.getItem('companySettings')) || {};
+                if (existingSettings.digitalSignatureData) {
+                    formData.digitalSignatureData = existingSettings.digitalSignatureData;
+                    formData.digitalSignatureName = existingSettings.digitalSignatureName;
+                }
+                saveSettingsData(formData);
+            }
+        }
+
+        // Save Settings Data
+        function saveSettingsData(formData) {
+            localStorage.setItem('companySettings', JSON.stringify(formData));
+            
+            // Show success message
+            showNotification('Company settings saved successfully!', 'success');
+            
+            // Update display
+            updateCurrentSettingsDisplay(formData);
+        }
+
+        // Reset Settings
+        function resetSettings() {
+            if (confirm('Are you sure you want to reset all company settings? This action cannot be undone.')) {
+                localStorage.removeItem('companySettings');
+                
+                // Reset form
+                document.getElementById('companySettingsForm').reset();
+                document.getElementById('brandingForm').reset();
+                
+                // Clear previews
+                clearFile('companyLogo', 'logo');
+                clearFile('digitalSignature', 'signature');
+                
+                // Update display
+                updateCurrentSettingsDisplay({});
+                
+                showNotification('Company settings reset to default!', 'warning');
+            }
+        }
+
+        // Export Settings
+        function exportSettings() {
+            const settings = JSON.parse(localStorage.getItem('companySettings')) || {};
+            
+            if (!settings.companyName) {
+                showNotification('No settings to export. Please configure company settings first.', 'warning');
+                return;
+            }
+
+            const exportContent = `
+========================================
+           COMPANY SETTINGS EXPORT
+========================================
+
+COMPANY INFORMATION:
+-------------------
+Company Name: ${settings.companyName}
+Contact Number: ${settings.companyContact}
+Email Address: ${settings.companyEmail}
+Address: ${settings.companyAddress}
+GSTIN: ${settings.gstin || 'Not provided'}
+PAN Number: ${settings.panNumber || 'Not provided'}
+
+BRANDING:
+--------
+Logo: ${settings.companyLogoName || 'Not uploaded'}
+Digital Signature: ${settings.digitalSignatureName || 'Not uploaded'}
+
+METADATA:
+---------
+Last Updated: ${settings.lastUpdated ? new Date(settings.lastUpdated).toLocaleDateString('en-IN') : 'Unknown'}
+Export Date: ${new Date().toLocaleDateString('en-IN')}
+
+========================================
+Exported from Staff Management System
+========================================
+            `;
+            
+            // Create and download the export file
+            const blob = new Blob([exportContent], { type: 'text/plain' });
+            const url = window.URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `CompanySettings_${settings.companyName.replace(/\s+/g, '_')}_${new Date().toLocaleDateString('en-IN').replace(/\//g, '_')}.txt`;
+            link.click();
+            window.URL.revokeObjectURL(url);
+            
+            showNotification('Settings exported successfully!', 'success');
+        }
+
+        // Show Notification
+        function showNotification(message, type) {
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 20px 25px;
+                border-radius: 10px;
+                box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+                z-index: 10000;
+                font-weight: 600;
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                color: white;
+            `;
+            
+            if (type === 'success') {
+                notification.style.background = 'linear-gradient(135deg, #28a745, #20c997)';
+                notification.innerHTML = `<i class="fas fa-check-circle"></i> ${message}`;
+            } else if (type === 'warning') {
+                notification.style.background = 'linear-gradient(135deg, #ffc107, #e0a800)';
+                notification.innerHTML = `<i class="fas fa-exclamation-triangle"></i> ${message}`;
+            }
+            
+            document.body.appendChild(notification);
+            
+            // Remove notification after 4 seconds
+            setTimeout(() => {
+                if (document.body.contains(notification)) {
+                    document.body.removeChild(notification);
+                }
+            }, 4000);
+        }
+    </script>
+</body>
+</html>

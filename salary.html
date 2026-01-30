@@ -1,0 +1,1212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Salary Management - Staff Management System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #4361ee;
+            --secondary-color: #3f37c9;
+            --success-color: #28a745;
+            --danger-color: #dc3545;
+            --warning-color: #ffc107;
+            --info-color: #17a2b8;
+            --orange-color: #fd7e14;
+            --dark-color: #2b2d42;
+            --light-bg: #f8f9fa;
+            --border-color: #dee2e6;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px 0;
+        }
+
+        .main-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .header h1 {
+            color: var(--primary-color);
+            font-weight: 700;
+            margin-bottom: 10px;
+            font-size: 2.5rem;
+        }
+
+        .controls-section {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .salary-section {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-control, .form-select {
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            padding: 12px 15px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.2rem rgba(67, 97, 238, 0.25);
+            outline: none;
+        }
+
+        .btn {
+            border-radius: 10px;
+            padding: 12px 24px;
+            font-weight: 600;
+            border: none;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(67, 97, 238, 0.3);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, #ffc107, #e0a800);
+            color: white;
+        }
+
+        .employee-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            border-left: 5px solid var(--primary-color);
+        }
+
+        .employee-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .employee-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--light-bg);
+        }
+
+        .employee-photo {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 15px;
+            border: 3px solid var(--primary-color);
+        }
+
+        .employee-info h4 {
+            margin: 0;
+            color: var(--dark-color);
+            font-weight: 700;
+            font-size: 1.2rem;
+        }
+
+        .employee-info small {
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        .attendance-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .attendance-item {
+            text-align: center;
+            padding: 15px;
+            border-radius: 10px;
+            background: var(--light-bg);
+            transition: all 0.3s ease;
+        }
+
+        .attendance-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .attendance-item.present {
+            background: linear-gradient(135deg, rgba(40, 167, 69, 0.1), rgba(32, 201, 151, 0.1));
+            border: 2px solid var(--success-color);
+        }
+
+        .attendance-item.absent {
+            background: linear-gradient(135deg, rgba(220, 53, 69, 0.1), rgba(255, 0, 106, 0.1));
+            border: 2px solid var(--danger-color);
+        }
+
+        .attendance-item.half-day {
+            background: linear-gradient(135deg, rgba(253, 126, 20, 0.1), rgba(255, 193, 7, 0.1));
+            border: 2px solid var(--orange-color);
+        }
+
+        .attendance-item.paid-leave {
+            background: linear-gradient(135deg, rgba(255, 193, 7, 0.1), rgba(255, 193, 7, 0.1));
+            border: 2px solid var(--warning-color);
+        }
+
+        .attendance-item.sick-leave {
+            background: linear-gradient(135deg, rgba(23, 162, 184, 0.1), rgba(23, 162, 184, 0.1));
+            border: 2px solid var(--info-color);
+        }
+
+        .attendance-number {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .attendance-label {
+            font-size: 0.9rem;
+            color: var(--dark-color);
+            font-weight: 600;
+        }
+
+        .salary-calculation {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 15px;
+        }
+
+        .salary-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding: 5px 0;
+        }
+
+        .salary-row.total {
+            border-top: 2px solid white;
+            padding-top: 15px;
+            margin-top: 15px;
+            font-size: 1.2rem;
+            font-weight: 700;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            margin-bottom: 20px;
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .back-link:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--dark-color);
+        }
+
+        .empty-state i {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            color: var(--border-color);
+        }
+
+        .loading-spinner {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px;
+        }
+
+        .spinner-border {
+            width: 3rem;
+            height: 3rem;
+        }
+
+        .stats-summary {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 15px;
+            border-radius: 10px;
+            background: var(--light-bg);
+        }
+
+        .stat-number {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: var(--dark-color);
+            font-weight: 600;
+        }
+
+        /* Print Styles */
+        @media print {
+            body {
+                background: white !important;
+                padding: 0 !important;
+            }
+            
+            .main-container {
+                max-width: 100% !important;
+                padding: 0 !important;
+            }
+            
+            .header, .controls-section, .stats-summary, .back-link, .btn {
+                display: none !important;
+            }
+            
+            .salary-section {
+                background: white !important;
+                box-shadow: none !important;
+                border-radius: 0 !important;
+                padding: 20px !important;
+            }
+            
+            .employee-card {
+                break-inside: avoid;
+                page-break-inside: avoid;
+                margin-bottom: 20px !important;
+                border: 1px solid #ddd !important;
+            }
+            
+            .employee-photo {
+                width: 50px !important;
+                height: 50px !important;
+            }
+            
+            .attendance-grid {
+                grid-template-columns: repeat(5, 1fr) !important;
+            }
+            
+            .salary-calculation {
+                background: #f8f9fa !important;
+                color: #333 !important;
+                border: 1px solid #ddd !important;
+            }
+            
+            .attendance-number {
+                font-size: 1.5rem !important;
+            }
+        }
+
+        /* PDF Modal Styles */
+        .pdf-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+        }
+
+        .pdf-content {
+            background: white;
+            padding: 40px;
+            border-radius: 10px;
+            max-width: 900px;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .pdf-header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 3px solid var(--primary-color);
+        }
+
+        .pdf-header h2 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+
+        .pdf-actions {
+            position: sticky;
+            top: 10px;
+            right: 10px;
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .pdf-actions button {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .pdf-actions .print-btn {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .pdf-actions .close-btn {
+            background: var(--danger-color);
+            color: white;
+        }
+
+        .pdf-employee-card {
+            background: white;
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 25px;
+            page-break-inside: avoid;
+        }
+
+        .pdf-employee-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--light-bg);
+        }
+
+        .pdf-attendance-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .pdf-attendance-item {
+            text-align: center;
+            padding: 15px;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            background: var(--light-bg);
+        }
+
+        .pdf-salary-details {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+        }
+
+        .pdf-salary-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding: 5px 0;
+        }
+
+        .pdf-salary-row.total {
+            border-top: 2px solid white;
+            padding-top: 15px;
+            margin-top: 15px;
+            font-size: 1.2rem;
+            font-weight: 700;
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <a href="staff-management.html" class="back-link">
+            <i class="fas fa-arrow-left"></i> Back to Staff Management
+        </a>
+
+        <div class="header">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h1><i class="fas fa-money-bill-wave"></i> Salary Management</h1>
+                    <p class="text-muted mb-0">Calculate salaries based on attendance records</p>
+                </div>
+                <div class="d-flex gap-2">
+                    <a href="attendance-management.html" class="btn btn-info">
+                        <i class="fas fa-calendar-check"></i> Attendance
+                    </a>
+                    <a href="staff-management.html" class="btn btn-primary">
+                        <i class="fas fa-users"></i> Staff Management
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="controls-section">
+            <div class="row align-items-end">
+                <div class="col-md-3">
+                    <label class="form-label">
+                        <i class="fas fa-calendar"></i> Select Year
+                    </label>
+                    <select class="form-select" id="yearSelect">
+                        <option value="2024">2024</option>
+                        <option value="2025">2025</option>
+                        <option value="2026" selected>2026</option>
+                        <option value="2027">2027</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">
+                        <i class="fas fa-calendar-alt"></i> Select Month
+                    </label>
+                    <select class="form-select" id="monthSelect">
+                        <option value="0">January</option>
+                        <option value="1">February</option>
+                        <option value="2">March</option>
+                        <option value="3">April</option>
+                        <option value="4">May</option>
+                        <option value="5">June</option>
+                        <option value="6">July</option>
+                        <option value="7">August</option>
+                        <option value="8">September</option>
+                        <option value="9">October</option>
+                        <option value="10">November</option>
+                        <option value="11">December</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <button class="btn btn-primary w-100" onclick="generateSalaryReport()">
+                        <i class="fas fa-calculator"></i> Generate Salary
+                    </button>
+                </div>
+                <div class="col-md-3">
+                    <button class="btn btn-success w-100" onclick="exportSalaryReport()">
+                        <i class="fas fa-download"></i> Export Report
+                    </button>
+                </div>
+                            </div>
+        </div>
+
+        <div class="stats-summary" id="statsSummary" style="display: none;">
+            <h4 class="mb-3"><i class="fas fa-chart-line"></i> Monthly Summary</h4>
+            <div class="stats-grid" id="statsGrid">
+                <!-- Stats will be generated here -->
+            </div>
+        </div>
+
+        <div class="salary-section">
+            <div id="salaryContainer">
+                <div class="empty-state">
+                    <i class="fas fa-money-bill-wave"></i>
+                    <h4>No Salary Data</h4>
+                    <p>Select year and month, then click "Generate Salary" to calculate salaries</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Initialize
+        let staffData = [];
+        let attendanceData = {};
+        let currentYear = new Date().getFullYear();
+        let currentMonth = new Date().getMonth();
+
+        document.addEventListener('DOMContentLoaded', function() {
+            loadStaffData();
+            loadAttendanceData();
+            setCurrentMonth();
+            setupEventListeners();
+        });
+
+        // Setup Event Listeners
+        function setupEventListeners() {
+            document.getElementById('yearSelect').addEventListener('change', function() {
+                currentYear = parseInt(this.value);
+            });
+
+            document.getElementById('monthSelect').addEventListener('change', function() {
+                currentMonth = parseInt(this.value);
+            });
+        }
+
+        // Set current month
+        function setCurrentMonth() {
+            document.getElementById('monthSelect').value = currentMonth.toString();
+        }
+
+        // Load Staff Data
+        function loadStaffData() {
+            const storedStaff = localStorage.getItem('staffData');
+            if (storedStaff) {
+                staffData = JSON.parse(storedStaff);
+            }
+        }
+
+        // Load Attendance Data
+        function loadAttendanceData() {
+            const monthKey = `${currentYear}-${currentMonth}`;
+            const stored = localStorage.getItem('attendanceData');
+            
+            if (stored) {
+                const allData = JSON.parse(stored);
+                attendanceData = allData[monthKey] || {};
+            }
+        }
+
+        // Generate Salary Report
+        function generateSalaryReport() {
+            const container = document.getElementById('salaryContainer');
+            
+            if (staffData.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-users-slash"></i>
+                        <h4>No Staff Members Found</h4>
+                        <p>Please add staff members in the Staff Management system first</p>
+                    </div>
+                `;
+                return;
+            }
+
+            // Show loading
+            container.innerHTML = `
+                <div class="loading-spinner">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                </div>
+            `;
+
+            setTimeout(() => {
+                loadAttendanceData(); // Reload attendance data for selected month
+                const salaryHTML = generateSalaryCards();
+                container.innerHTML = salaryHTML;
+                
+                // Generate summary statistics
+                generateSummaryStats();
+                
+                // Show summary section
+                document.getElementById('statsSummary').style.display = 'block';
+            }, 500);
+        }
+
+        // Generate Salary Cards
+        function generateSalaryCards() {
+            let salaryHTML = '';
+            const daysInMonth = getDaysInMonth(currentYear, currentMonth);
+
+            staffData.forEach(staff => {
+                const staffId = staff.id;
+                const attendance = calculateAttendance(staffId, daysInMonth);
+                const salary = calculateSalary(staff, attendance);
+
+                salaryHTML += `
+                    <div class="employee-card">
+                        <div class="employee-header">
+                            <img src="${staff.staffPhotoData || 'https://picsum.photos/seed/' + staff.id + '/60/60.jpg'}" 
+                                 alt="${staff.name}" class="employee-photo">
+                            <div class="employee-info">
+                                <h4>${staff.name}</h4>
+                                <small><i class="fas fa-id-badge"></i> ${staff.employeeCode || 'EMP' + staff.id}</small>
+                            </div>
+                        </div>
+                        
+                        <div class="attendance-grid">
+                            <div class="attendance-item present">
+                                <div class="attendance-number text-success">${attendance.present}</div>
+                                <div class="attendance-label">Total Present</div>
+                            </div>
+                            <div class="attendance-item absent">
+                                <div class="attendance-number text-danger">${attendance.absent}</div>
+                                <div class="attendance-label">Total Absent</div>
+                            </div>
+                            <div class="attendance-item half-day">
+                                <div class="attendance-number" style="color: var(--orange-color);">${attendance.halfDay}</div>
+                                <div class="attendance-label">Half Day</div>
+                            </div>
+                            <div class="attendance-item paid-leave">
+                                <div class="attendance-number text-warning">${attendance.paidLeave}</div>
+                                <div class="attendance-label">Paid Leave</div>
+                            </div>
+                            <div class="attendance-item sick-leave">
+                                <div class="attendance-number text-info">${attendance.sickLeave}</div>
+                                <div class="attendance-label">Sick Leave</div>
+                            </div>
+                        </div>
+                        
+                        <div class="salary-calculation">
+                            <h5 class="mb-3"><i class="fas fa-calculator"></i> Salary Calculation</h5>
+                            <div class="salary-row">
+                                <span>Basic Pay:</span>
+                                <span>₹${staff.basicPay.toFixed(2)}</span>
+                            </div>
+                            <div class="salary-row">
+                                <span>HRA:</span>
+                                <span>₹${staff.hra.toFixed(2)}</span>
+                            </div>
+                            <div class="salary-row">
+                                <span>Other Allowances:</span>
+                                <span>₹${staff.allowances.toFixed(2)}</span>
+                            </div>
+                            <div class="salary-row">
+                                <span>Per Day Salary:</span>
+                                <span>₹${salary.perDay.toFixed(2)}</span>
+                            </div>
+                            <div class="salary-row">
+                                <span>Deduction for Absence:</span>
+                                <span>-₹${salary.absenceDeduction.toFixed(2)}</span>
+                            </div>
+                            <div class="salary-row total">
+                                <span>Net Salary:</span>
+                                <span>₹${salary.netSalary.toFixed(2)}</span>
+                            </div>
+                            <div class="mt-3">
+                                <button class="btn btn-warning w-100 mb-2" onclick="generateIndividualSalaryPDF('${staff.id}')">
+                                    <i class="fas fa-file-pdf"></i> Get Salary Status
+                                </button>
+                                <button class="btn btn-success w-100" onclick="disburseSalary('${staff.id}')">
+                                    <i class="fas fa-money-check-alt"></i> Disbursement
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            return salaryHTML;
+        }
+
+        // Calculate Attendance
+        function calculateAttendance(staffId, daysInMonth) {
+            let present = 0;
+            let absent = 0;
+            let halfDay = 0;
+            let paidLeave = 0;
+            let sickLeave = 0;
+
+            for (let day = 1; day <= daysInMonth; day++) {
+                const dateKey = `${currentYear}-${currentMonth}-${day}`;
+                const value = attendanceData[staffId] && attendanceData[staffId][dateKey] ? attendanceData[staffId][dateKey] : '';
+                
+                switch(value) {
+                    case 'P':
+                        present++;
+                        break;
+                    case 'A':
+                        absent++;
+                        break;
+                    case 'PL':
+                        paidLeave++;
+                        break;
+                    case 'SL':
+                        sickLeave++;
+                        break;
+                    case 'HD':
+                        halfDay++;
+                        break;
+                }
+            }
+
+            return { present, absent, halfDay, paidLeave, sickLeave };
+        }
+
+        // Calculate Salary
+        function calculateSalary(staff, attendance) {
+            const totalCTC = staff.totalCTC || staff.basicPay + staff.hra + staff.allowances;
+            const daysInMonth = getDaysInMonth(currentYear, currentMonth);
+            const perDaySalary = totalCTC / daysInMonth;
+            
+            // Calculate effective working days (P + PL + 0.5*HD)
+            const effectiveWorkingDays = attendance.present + attendance.paidLeave + (attendance.halfDay * 0.5);
+            const totalWorkingDays = attendance.present + attendance.absent + attendance.paidLeave + attendance.sickLeave + attendance.halfDay;
+            
+            // Deduction for absent days (excluding sick leave)
+            const absenceDeduction = (attendance.absent) * perDaySalary;
+            
+            // Net salary calculation
+            const netSalary = totalCTC - absenceDeduction;
+
+            return {
+                perDay: perDaySalary,
+                absenceDeduction: absenceDeduction,
+                netSalary: netSalary
+            };
+        }
+
+        // Generate Summary Statistics
+        function generateSummaryStats() {
+            const daysInMonth = getDaysInMonth(currentYear, currentMonth);
+            let totalPresent = 0;
+            let totalAbsent = 0;
+            let totalHalfDay = 0;
+            let totalPaidLeave = 0;
+            let totalSickLeave = 0;
+            let totalSalary = 0;
+
+            staffData.forEach(staff => {
+                const attendance = calculateAttendance(staff.id, daysInMonth);
+                const salary = calculateSalary(staff, attendance);
+                
+                totalPresent += attendance.present;
+                totalAbsent += attendance.absent;
+                totalHalfDay += attendance.halfDay;
+                totalPaidLeave += attendance.paidLeave;
+                totalSickLeave += attendance.sickLeave;
+                totalSalary += salary.netSalary;
+            });
+
+            const statsHTML = `
+                <div class="stat-item">
+                    <div class="stat-number text-success">${totalPresent}</div>
+                    <div class="stat-label">Total Present</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number text-danger">${totalAbsent}</div>
+                    <div class="stat-label">Total Absent</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" style="color: var(--orange-color);">${totalHalfDay}</div>
+                    <div class="stat-label">Total Half Day</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number text-warning">${totalPaidLeave}</div>
+                    <div class="stat-label">Total Paid Leave</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number text-info">${totalSickLeave}</div>
+                    <div class="stat-label">Total Sick Leave</div>
+                </div>
+                <div class="stat-item" style="background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)); color: white;">
+                    <div class="stat-number">₹${totalSalary.toFixed(2)}</div>
+                    <div class="stat-label">Total Salary</div>
+                </div>
+            `;
+
+            document.getElementById('statsGrid').innerHTML = statsHTML;
+        }
+
+        // Get days in month
+        function getDaysInMonth(year, month) {
+            return new Date(year, month + 1, 0).getDate();
+        }
+
+        // Export Salary Report
+        function exportSalaryReport() {
+            const container = document.getElementById('salaryContainer');
+            
+            if (container.innerHTML.includes('empty-state')) {
+                showNotification('Please generate salary report first!', 'warning');
+                return;
+            }
+
+            const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 
+                              'July', 'August', 'September', 'October', 'November', 'December'];
+            const monthName = monthNames[currentMonth];
+            
+            let reportContent = `
+========================================
+           SALARY REPORT
+========================================
+Period: ${monthName} ${currentYear}
+Generated on: ${new Date().toLocaleDateString('en-IN')}
+
+========================================
+            `;
+            
+            const daysInMonth = getDaysInMonth(currentYear, currentMonth);
+            
+            staffData.forEach(staff => {
+                const attendance = calculateAttendance(staff.id, daysInMonth);
+                const salary = calculateSalary(staff, attendance);
+                
+                reportContent += `
+EMPLOYEE: ${staff.name}
+Employee Code: ${staff.employeeCode || 'EMP' + staff.id}
+----------------------------------------
+ATTENDANCE DETAILS:
+- Total Present: ${attendance.present} days
+- Total Absent: ${attendance.absent} days
+- Half Day: ${attendance.halfDay} days
+- Paid Leave: ${attendance.paidLeave} days
+- Sick Leave: ${attendance.sickLeave} days
+
+SALARY DETAILS:
+- Basic Pay: ₹${staff.basicPay.toFixed(2)}
+- HRA: ₹${staff.hra.toFixed(2)}
+- Other Allowances: ₹${staff.allowances.toFixed(2)}
+- Per Day Salary: ₹${salary.perDay.toFixed(2)}
+- Deduction for Absence: ₹${salary.absenceDeduction.toFixed(2)}
+- NET SALARY: ₹${salary.netSalary.toFixed(2)}
+
+========================================
+                `;
+            });
+            
+            reportContent += `
+Total Employees: ${staffData.length}
+Report Generated by: Staff Management System
+========================================
+            `;
+
+            // Create and download the report
+            const blob = new Blob([reportContent], { type: 'text/plain' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `Salary_Report_${monthName}_${currentYear}.txt`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+
+            showNotification('Salary report exported successfully!', 'success');
+        }
+
+        // Generate Individual Salary PDF
+        function generateIndividualSalaryPDF(staffId) {
+            const staff = staffData.find(s => s.id == staffId);
+            if (!staff) return;
+
+            const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 
+                              'July', 'August', 'September', 'October', 'November', 'December'];
+            const monthName = monthNames[currentMonth];
+            
+            // Create PDF modal
+            const modal = document.createElement('div');
+            modal.className = 'pdf-modal';
+            
+            const daysInMonth = getDaysInMonth(currentYear, currentMonth);
+            const attendance = calculateAttendance(staffId, daysInMonth);
+            const salary = calculateSalary(staff, attendance);
+            
+            let pdfHTML = `
+                <div class="pdf-content">
+                    <div class="pdf-actions">
+                        <button class="print-btn" onclick="window.print()">
+                            <i class="fas fa-print"></i> Print
+                        </button>
+                        <button class="close-btn" onclick="closePDFModal()">
+                            <i class="fas fa-times"></i> Close
+                        </button>
+                    </div>
+                    
+                    <div class="pdf-header">
+                        <h2><i class="fas fa-money-bill-wave"></i> Employee Salary Status</h2>
+                        <p><strong>Period:</strong> ${monthName} ${currentYear}</p>
+                        <p><strong>Generated on:</strong> ${new Date().toLocaleDateString('en-IN')}</p>
+                    </div>
+                    
+                    <div class="pdf-employee-card">
+                        <div class="pdf-employee-header">
+                            <img src="${staff.staffPhotoData || 'https://picsum.photos/seed/' + staff.id + '/50/50.jpg'}" 
+                                 alt="${staff.name}" style="width: 50px; height: 50px; border-radius: 50%; margin-right: 15px; border: 2px solid var(--primary-color);">
+                            <div>
+                                <h4 style="margin: 0; color: var(--dark-color); font-weight: 700;">${staff.name}</h4>
+                                <p style="margin: 0; color: var(--primary-color); font-weight: 600;">${staff.employeeCode || 'EMP' + staff.id}</p>
+                            </div>
+                        </div>
+                        
+                        <div class="pdf-attendance-grid">
+                            <div class="pdf-attendance-item">
+                                <div style="font-size: 1.5rem; font-weight: 700; color: var(--success-color);">${attendance.present}</div>
+                                <div style="font-size: 0.9rem; font-weight: 600;">Present</div>
+                            </div>
+                            <div class="pdf-attendance-item">
+                                <div style="font-size: 1.5rem; font-weight: 700; color: var(--danger-color);">${attendance.absent}</div>
+                                <div style="font-size: 0.9rem; font-weight: 600;">Absent</div>
+                            </div>
+                            <div class="pdf-attendance-item">
+                                <div style="font-size: 1.5rem; font-weight: 700; color: var(--orange-color);">${attendance.halfDay}</div>
+                                <div style="font-size: 0.9rem; font-weight: 600;">Half Day</div>
+                            </div>
+                            <div class="pdf-attendance-item">
+                                <div style="font-size: 1.5rem; font-weight: 700; color: var(--warning-color);">${attendance.paidLeave}</div>
+                                <div style="font-size: 0.9rem; font-weight: 600;">Paid Leave</div>
+                            </div>
+                            <div class="pdf-attendance-item">
+                                <div style="font-size: 1.5rem; font-weight: 700; color: var(--info-color);">${attendance.sickLeave}</div>
+                                <div style="font-size: 0.9rem; font-weight: 600;">Sick Leave</div>
+                            </div>
+                        </div>
+                        
+                        <div class="pdf-salary-details">
+                            <h5 style="margin-bottom: 15px;"><i class="fas fa-calculator"></i> Salary Calculation</h5>
+                            <div class="pdf-salary-row">
+                                <span>Basic Pay:</span>
+                                <span>₹${staff.basicPay.toFixed(2)}</span>
+                            </div>
+                            <div class="pdf-salary-row">
+                                <span>HRA:</span>
+                                <span>₹${staff.hra.toFixed(2)}</span>
+                            </div>
+                            <div class="pdf-salary-row">
+                                <span>Other Allowances:</span>
+                                <span>₹${staff.allowances.toFixed(2)}</span>
+                            </div>
+                            <div class="pdf-salary-row">
+                                <span>Total CTC:</span>
+                                <span>₹${staff.totalCTC.toFixed(2)}</span>
+                            </div>
+                            <div class="pdf-salary-row">
+                                <span>Per Day Salary:</span>
+                                <span>₹${salary.perDay.toFixed(2)}</span>
+                            </div>
+                            <div class="pdf-salary-row">
+                                <span>Salary Deduction:</span>
+                                <span>₹${salary.absenceDeduction.toFixed(2)}</span>
+                            </div>
+                            <div class="pdf-salary-row total">
+                                <span>Net Salary:</span>
+                                <span>₹${salary.netSalary.toFixed(2)}</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div style="text-align: center; margin-top: 30px; padding-top: 20px; border-top: 2px solid var(--border-color);">
+                        <p style="margin: 0; color: var(--dark-color); font-weight: 600;">Report Generated by Staff Management System</p>
+                        <p style="margin: 5px 0 0 0; color: var(--primary-color); font-size: 0.9rem;">© 2026 Staff Management System</p>
+                    </div>
+                </div>
+            `;
+            
+            modal.innerHTML = pdfHTML;
+            document.body.appendChild(modal);
+            
+            // Close modal when clicking outside
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal) {
+                    closePDFModal();
+                }
+            });
+        }
+
+        // Close PDF Modal
+        function closePDFModal() {
+            const modal = document.querySelector('.pdf-modal');
+            if (modal) {
+                document.body.removeChild(modal);
+            }
+        }
+
+        // Disburse Salary - Redirect to Bank URL
+        function disburseSalary(staffId) {
+            const staff = staffData.find(s => s.id == staffId);
+            if (!staff) return;
+
+            // Load company settings to get bank URL
+            const companySettings = JSON.parse(localStorage.getItem('companySettings')) || {};
+            const bankUrl = companySettings.bankUrl;
+
+            if (!bankUrl) {
+                showNotification('Bank URL not configured in company settings. Please set up bank URL first.', 'warning');
+                return;
+            }
+
+            // Show confirmation modal
+            const modal = document.createElement('div');
+            modal.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0,0,0,0.5);
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                z-index: 9999;
+            `;
+            
+            const dialog = document.createElement('div');
+            dialog.style.cssText = `
+                background: white;
+                padding: 30px;
+                border-radius: 15px;
+                box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+                max-width: 500px;
+                width: 90%;
+                text-align: center;
+            `;
+            
+            const daysInMonth = getDaysInMonth(currentYear, currentMonth);
+            const attendance = calculateAttendance(staffId, daysInMonth);
+            const salary = calculateSalary(staff, attendance);
+            
+            dialog.innerHTML = `
+                <h4 style="margin-bottom: 20px; color: #2b2d42;">
+                    <i class="fas fa-money-check-alt" style="color: #28a745;"></i> Salary Disbursement
+                </h4>
+                <div style="background: #f8f9fa; padding: 20px; border-radius: 10px; margin-bottom: 20px; text-align: left;">
+                    <h6 style="color: #495057; margin-bottom: 15px;">Employee Details:</h6>
+                    <p style="margin: 5px 0;"><strong>Name:</strong> ${staff.name}</p>
+                    <p style="margin: 5px 0;"><strong>Employee Code:</strong> ${staff.employeeCode || 'EMP' + staff.id}</p>
+                    <p style="margin: 5px 0;"><strong>Account:</strong> ${staff.accountNumber}</p>
+                    <p style="margin: 5px 0;"><strong>Bank:</strong> ${staff.bankName}</p>
+                    
+                    <h6 style="color: #495057; margin: 15px 0 5px 0;">Salary Details:</h6>
+                    <p style="margin: 5px 0;"><strong>Net Salary:</strong> ₹${salary.netSalary.toFixed(2)}</p>
+                    <p style="margin: 5px 0;"><strong>Month:</strong> ${new Date(currentYear, currentMonth).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}</p>
+                </div>
+                <div style="display: flex; gap: 15px; justify-content: center;">
+                    <button onclick="proceedToBank('${bankUrl}', '${staff.name}', '${salary.netSalary.toFixed(2)}')" style="
+                        background: linear-gradient(135deg, #28a745, #20c997);
+                        color: white;
+                        border: none;
+                        padding: 12px 25px;
+                        border-radius: 8px;
+                        cursor: pointer;
+                        font-weight: 600;
+                        display: flex;
+                        align-items: center;
+                        gap: 8px;
+                    ">
+                        <i class="fas fa-university"></i> Proceed to Bank
+                    </button>
+                    <button onclick="closeDisbursementModal()" style="
+                        background: #6c757d;
+                        color: white;
+                        border: none;
+                        padding: 12px 25px;
+                        border-radius: 8px;
+                        cursor: pointer;
+                        font-weight: 600;
+                    ">Cancel</button>
+                </div>
+            `;
+            
+            modal.appendChild(dialog);
+            document.body.appendChild(modal);
+            
+            // Close modal when clicking outside
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal) {
+                    closeDisbursementModal();
+                }
+            });
+        }
+
+        // Proceed to Bank
+        function proceedToBank(bankUrl, staffName, salaryAmount) {
+            closeDisbursementModal();
+            
+            // Show success notification
+            showNotification(`Redirecting to bank for ${staffName}'s salary disbursement of ₹${salaryAmount}`, 'success');
+            
+            // Open bank URL in new tab
+            setTimeout(() => {
+                window.open(bankUrl, '_blank');
+            }, 1000);
+        }
+
+        // Close Disbursement Modal
+        function closeDisbursementModal() {
+            const modal = document.querySelector('div[style*="position: fixed"]');
+            if (modal && modal.style.zIndex === '9999') {
+                document.body.removeChild(modal);
+            }
+        }
+
+        // Show Notification
+        function showNotification(message, type) {
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 20px 25px;
+                border-radius: 10px;
+                box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+                z-index: 10000;
+                font-weight: 600;
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                color: white;
+            `;
+            
+            if (type === 'success') {
+                notification.style.background = 'linear-gradient(135deg, #28a745, #20c997)';
+                notification.innerHTML = `<i class="fas fa-check-circle"></i> ${message}`;
+            } else if (type === 'warning') {
+                notification.style.background = 'linear-gradient(135deg, #ffc107, #e0a800)';
+                notification.innerHTML = `<i class="fas fa-exclamation-triangle"></i> ${message}`;
+            }
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                if (document.body.contains(notification)) {
+                    document.body.removeChild(notification);
+                }
+            }, 3000);
+        }
+    </script>
+</body>
+</html>

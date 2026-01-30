@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attendance & Leave Management - Staff Management System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #4361ee;
+            --secondary-color: #3f37c9;
+            --success-color: #06ffa5;
+            --danger-color: #ff006e;
+            --warning-color: #ffbe0b;
+            --dark-color: #2b2d42;
+            --light-bg: #f8f9fa;
+            --border-color: #dee2e6;
+            --present-color: #28a745;
+            --absent-color: #dc3545;
+            --leave-color: #ffc107;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px 0;
+        }
+
+        .main-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .header h1 {
+            color: var(--primary-color);
+            font-weight: 700;
+            margin-bottom: 10px;
+            font-size: 2.5rem;
+        }
+
+        .controls-section {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .attendance-section {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            overflow-x: auto;
+        }
+
+        .form-control, .form-select {
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            padding: 12px 15px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.2rem rgba(67, 97, 238, 0.25);
+            outline: none;
+        }
+
+        .btn {
+            border-radius: 10px;
+            padding: 12px 24px;
+            font-weight: 600;
+            border: none;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(67, 97, 238, 0.3);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, #ffc107, #e0a800);
+            color: white;
+        }
+
+        .attendance-table {
+            min-width: 1200px;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+
+        .attendance-table thead th {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            font-weight: 600;
+            text-align: center;
+            padding: 12px 8px;
+            font-size: 12px;
+            border: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .attendance-table thead th:first-child {
+            position: sticky;
+            left: 0;
+            z-index: 11;
+            min-width: 200px;
+            text-align: left;
+        }
+
+        .attendance-table tbody td {
+            padding: 8px;
+            border: 1px solid var(--border-color);
+            text-align: center;
+            vertical-align: middle;
+        }
+
+        .attendance-table tbody td:first-child {
+            position: sticky;
+            left: 0;
+            background: white;
+            z-index: 5;
+            font-weight: 600;
+            text-align: left;
+            min-width: 200px;
+        }
+
+        .attendance-select {
+            width: 70px;
+            padding: 4px 6px;
+            border: 2px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .attendance-select:focus {
+            outline: none;
+            box-shadow: 0 0 0 0.2rem rgba(67, 97, 238, 0.25);
+        }
+
+        .attendance-select option[value="P"] {
+            background-color: var(--present-color);
+            color: white;
+        }
+
+        .attendance-select option[value="A"] {
+            background-color: var(--absent-color);
+            color: white;
+        }
+
+        .attendance-select option[value="PL"] {
+            background-color: var(--leave-color);
+            color: black;
+        }
+
+        .attendance-select option[value="SL"] {
+            background-color: #17a2b8;
+            color: white;
+        }
+
+        .attendance-select option[value="HD"] {
+            background-color: #fd7e14;
+            color: white;
+        }
+
+        .date-header {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+        }
+
+        .date-number {
+            font-weight: 700;
+            font-size: 14px;
+        }
+
+        .day-name {
+            font-size: 10px;
+            opacity: 0.9;
+            font-weight: 500;
+        }
+
+        .weekend-header {
+            background: linear-gradient(135deg, #6c757d, #495057) !important;
+        }
+
+        .stats-card {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .stats-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .stats-number {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .stats-label {
+            color: var(--dark-color);
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .present-stats {
+            border-top: 4px solid var(--present-color);
+        }
+
+        .absent-stats {
+            border-top: 4px solid var(--absent-color);
+        }
+
+        .leave-stats {
+            border-top: 4px solid var(--leave-color);
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            margin-bottom: 20px;
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .back-link:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--dark-color);
+        }
+
+        .empty-state i {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            color: var(--border-color);
+        }
+
+        .loading-spinner {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px;
+        }
+
+        .spinner-border {
+            width: 3rem;
+            height: 3rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <a href="staff-management.html" class="back-link">
+            <i class="fas fa-arrow-left"></i> Back to Staff Management
+        </a>
+
+        <div class="header">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h1><i class="fas fa-calendar-check"></i> Attendance & Leave Management</h1>
+                    <p class="text-muted mb-0">Track staff attendance and manage leave records</p>
+                </div>
+                <a href="staff-management.html" class="btn btn-primary">
+                    <i class="fas fa-users"></i> Staff Management
+                </a>
+            </div>
+        </div>
+
+        <div class="controls-section">
+            <div class="row align-items-end">
+                <div class="col-md-3">
+                    <label class="form-label">
+                        <i class="fas fa-calendar"></i> Select Year
+                    </label>
+                    <select class="form-select" id="yearSelect">
+                        <option value="2024">2024</option>
+                        <option value="2025">2025</option>
+                        <option value="2026" selected>2026</option>
+                        <option value="2027">2027</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">
+                        <i class="fas fa-calendar-alt"></i> Select Month
+                    </label>
+                    <select class="form-select" id="monthSelect">
+                        <option value="0">January</option>
+                        <option value="1">February</option>
+                        <option value="2">March</option>
+                        <option value="3">April</option>
+                        <option value="4">May</option>
+                        <option value="5">June</option>
+                        <option value="6">July</option>
+                        <option value="7">August</option>
+                        <option value="8">September</option>
+                        <option value="9">October</option>
+                        <option value="10">November</option>
+                        <option value="11">December</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <button class="btn btn-primary w-100" onclick="generateAttendanceTable()">
+                        <i class="fas fa-sync-alt"></i> Generate Table
+                    </button>
+                </div>
+                <div class="col-md-3">
+                    <button class="btn btn-success w-100" onclick="saveAttendanceData()">
+                        <i class="fas fa-save"></i> Save Attendance
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="controls-section">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="stats-card present-stats">
+                        <div class="stats-number text-success" id="presentCount">0</div>
+                        <div class="stats-label">Present (P + PL)</div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="stats-card absent-stats">
+                        <div class="stats-number text-danger" id="absentCount">0</div>
+                        <div class="stats-label">Absent</div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="stats-card leave-stats">
+                        <div class="stats-number text-warning" id="leaveCount">0</div>
+                        <div class="stats-label">On Leave</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="attendance-section">
+            <div id="attendanceTableContainer">
+                <div class="empty-state">
+                    <i class="fas fa-calendar-alt"></i>
+                    <h4>No Attendance Data</h4>
+                    <p>Select year and month, then click "Generate Table" to create attendance sheet</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="attendance-section" id="summarySection" style="display: none;">
+            <h3 class="mb-4">
+                <i class="fas fa-chart-bar"></i> Employee-wise Attendance Summary
+            </h3>
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Employee Details</th>
+                            <th class="text-center">Total Present (P)</th>
+                            <th class="text-center">Total Absent (A)</th>
+                            <th class="text-center">Paid Leave (PL)</th>
+                            <th class="text-center">Sick Leave (SL)</th>
+                            <th class="text-center">Half Day (HD)</th>
+                            <th class="text-center">Total Working Days</th>
+                            <th class="text-center">Attendance %</th>
+                        </tr>
+                    </thead>
+                    <tbody id="summaryTableBody">
+                        <!-- Summary rows will be generated here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Initialize
+        let staffData = [];
+        let attendanceData = {};
+        let currentYear = new Date().getFullYear();
+        let currentMonth = new Date().getMonth();
+
+        document.addEventListener('DOMContentLoaded', function() {
+            loadStaffData();
+            setCurrentMonth();
+            setupEventListeners();
+        });
+
+        // Setup Event Listeners
+        function setupEventListeners() {
+            document.getElementById('yearSelect').addEventListener('change', function() {
+                currentYear = parseInt(this.value);
+            });
+
+            document.getElementById('monthSelect').addEventListener('change', function() {
+                currentMonth = parseInt(this.value);
+            });
+        }
+
+        // Set current month
+        function setCurrentMonth() {
+            document.getElementById('monthSelect').value = currentMonth.toString();
+        }
+
+        // Load Staff Data
+        function loadStaffData() {
+            const storedStaff = localStorage.getItem('staffData');
+            if (storedStaff) {
+                staffData = JSON.parse(storedStaff);
+            }
+        }
+
+        // Generate Attendance Table
+        function generateAttendanceTable() {
+            const container = document.getElementById('attendanceTableContainer');
+            
+            if (staffData.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-users-slash"></i>
+                        <h4>No Staff Members Found</h4>
+                        <p>Please add staff members in the Staff Management system first</p>
+                    </div>
+                `;
+                document.getElementById('summarySection').style.display = 'none';
+                return;
+            }
+
+            // Show loading
+            container.innerHTML = `
+                <div class="loading-spinner">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                </div>
+            `;
+
+            setTimeout(() => {
+                const daysInMonth = getDaysInMonth(currentYear, currentMonth);
+                const tableHTML = createAttendanceTable(daysInMonth);
+                container.innerHTML = tableHTML;
+                
+                // Load existing attendance data
+                loadAttendanceData();
+                
+                // Update statistics
+                updateStatistics();
+                
+                // Generate summary table
+                generateSummaryTable(daysInMonth);
+                
+                // Show summary section
+                document.getElementById('summarySection').style.display = 'block';
+            }, 500);
+        }
+
+        // Get days in month
+        function getDaysInMonth(year, month) {
+            return new Date(year, month + 1, 0).getDate();
+        }
+
+        // Get day name
+        function getDayName(year, month, day) {
+            const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+            const date = new Date(year, month, day);
+            return days[date.getDay()];
+        }
+
+        // Check if weekend
+        function isWeekend(year, month, day) {
+            const date = new Date(year, month, day);
+            return date.getDay() === 0 || date.getDay() === 6;
+        }
+
+        // Create Attendance Table
+        function createAttendanceTable(daysInMonth) {
+            let tableHTML = `
+                <table class="attendance-table">
+                    <thead>
+                        <tr>
+                            <th>Staff Details</th>
+            `;
+
+            // Add date headers
+            for (let day = 1; day <= daysInMonth; day++) {
+                const dayName = getDayName(currentYear, currentMonth, day);
+                const isWeekendDay = isWeekend(currentYear, currentMonth, day);
+                const weekendClass = isWeekendDay ? 'weekend-header' : '';
+                
+                tableHTML += `
+                    <th class="${weekendClass}">
+                        <div class="date-header">
+                            <span class="date-number">${day}</span>
+                            <span class="day-name">${dayName}</span>
+                        </div>
+                    </th>
+                `;
+            }
+
+            tableHTML += `
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
+            // Add staff rows
+            staffData.forEach(staff => {
+                tableHTML += `
+                    <tr>
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <img src="${staff.staffPhotoData || 'https://picsum.photos/seed/' + staff.id + '/40/40.jpg'}" 
+                                     alt="${staff.name}" class="rounded-circle me-2" style="width: 40px; height: 40px; object-fit: cover;">
+                                <div>
+                                    <div class="fw-bold">${staff.name}</div>
+                                    <small class="text-muted">${staff.employeeCode || 'EMP' + staff.id}</small>
+                                </div>
+                            </div>
+                        </td>
+                `;
+
+                // Add attendance dropdowns for each day
+                for (let day = 1; day <= daysInMonth; day++) {
+                    const dateKey = `${currentYear}-${currentMonth}-${day}`;
+                    const staffId = staff.id;
+                    const currentValue = attendanceData[staffId] && attendanceData[staffId][dateKey] ? attendanceData[staffId][dateKey] : '';
+                    
+                    tableHTML += `
+                        <td>
+                            <select class="attendance-select" data-staff="${staffId}" data-date="${dateKey}" onchange="updateAttendance('${staffId}', '${dateKey}', this.value)">
+                                <option value="">-</option>
+                                <option value="P" ${currentValue === 'P' ? 'selected' : ''}>P</option>
+                                <option value="A" ${currentValue === 'A' ? 'selected' : ''}>A</option>
+                                <option value="PL" ${currentValue === 'PL' ? 'selected' : ''}>PL</option>
+                                <option value="SL" ${currentValue === 'SL' ? 'selected' : ''}>SL</option>
+                                <option value="HD" ${currentValue === 'HD' ? 'selected' : ''}>HD</option>
+                            </select>
+                        </td>
+                    `;
+                }
+
+                tableHTML += `
+                    </tr>
+                `;
+            });
+
+            tableHTML += `
+                    </tbody>
+                </table>
+            `;
+
+            return tableHTML;
+        }
+
+        // Update Attendance
+        function updateAttendance(staffId, dateKey, value) {
+            if (!attendanceData[staffId]) {
+                attendanceData[staffId] = {};
+            }
+            
+            if (value) {
+                attendanceData[staffId][dateKey] = value;
+            } else {
+                delete attendanceData[staffId][dateKey];
+            }
+            
+            updateStatistics();
+            
+            // Update summary table if it exists
+            const summarySection = document.getElementById('summarySection');
+            if (summarySection && summarySection.style.display !== 'none') {
+                const daysInMonth = getDaysInMonth(currentYear, currentMonth);
+                generateSummaryTable(daysInMonth);
+            }
+        }
+
+        // Generate Summary Table
+        function generateSummaryTable(daysInMonth) {
+            const summaryTableBody = document.getElementById('summaryTableBody');
+            let summaryHTML = '';
+
+            staffData.forEach(staff => {
+                const staffId = staff.id;
+                let presentCount = 0;
+                let absentCount = 0;
+                let paidLeaveCount = 0;
+                let sickLeaveCount = 0;
+                let halfDayCount = 0;
+
+                // Count attendance for this staff member
+                for (let day = 1; day <= daysInMonth; day++) {
+                    const dateKey = `${currentYear}-${currentMonth}-${day}`;
+                    const value = attendanceData[staffId] && attendanceData[staffId][dateKey] ? attendanceData[staffId][dateKey] : '';
+                    
+                    switch(value) {
+                        case 'P':
+                            presentCount++;
+                            break;
+                        case 'A':
+                            absentCount++;
+                            break;
+                        case 'PL':
+                            paidLeaveCount++;
+                            break;
+                        case 'SL':
+                            sickLeaveCount++;
+                            break;
+                        case 'HD':
+                            halfDayCount++;
+                            break;
+                    }
+                }
+
+                // Calculate effective days with special logic
+                const effectivePresent = presentCount + paidLeaveCount + (halfDayCount * 0.5); // HD counts as 0.5 present
+                const effectiveAbsent = absentCount + Math.floor(sickLeaveCount / 10); // 10 SL = 1 absent
+                const totalMarked = presentCount + absentCount + paidLeaveCount + sickLeaveCount + halfDayCount;
+                const attendancePercentage = totalMarked > 0 ? ((effectivePresent) / (totalMarked - Math.floor(sickLeaveCount / 10) + (halfDayCount * 0.5)) * 100).toFixed(1) : 0;
+
+                summaryHTML += `
+                    <tr>
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <img src="${staff.staffPhotoData || 'https://picsum.photos/seed/' + staff.id + '/40/40.jpg'}" 
+                                     alt="${staff.name}" class="rounded-circle me-2" style="width: 40px; height: 40px; object-fit: cover;">
+                                <div>
+                                    <div class="fw-bold">${staff.name}</div>
+                                    <small class="text-muted">${staff.employeeCode || 'EMP' + staff.id}</small>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="text-center">
+                            <span class="badge bg-success fs-6">${presentCount}</span>
+                        </td>
+                        <td class="text-center">
+                            <span class="badge bg-danger fs-6">${absentCount}</span>
+                        </td>
+                        <td class="text-center">
+                            <span class="badge bg-warning fs-6">${paidLeaveCount}</span>
+                        </td>
+                        <td class="text-center">
+                            <span class="badge bg-info fs-6">${sickLeaveCount}</span>
+                        </td>
+                        <td class="text-center">
+                            <span class="badge" style="background-color: #fd7e14; color: white;" class="fs-6">${halfDayCount}</span>
+                        </td>
+                        <td class="text-center">
+                            <strong>${totalMarked}</strong>
+                        </td>
+                        <td class="text-center">
+                            <div class="progress" style="height: 20px;">
+                                <div class="progress-bar ${attendancePercentage >= 90 ? 'bg-success' : attendancePercentage >= 75 ? 'bg-warning' : 'bg-danger'}" 
+                                     role="progressbar" 
+                                     style="width: ${attendancePercentage}%">
+                                    ${attendancePercentage}%
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            summaryTableBody.innerHTML = summaryHTML;
+        }
+
+        // Update Statistics
+        function updateStatistics() {
+            let presentCount = 0;
+            let absentCount = 0;
+            let paidLeaveCount = 0;
+            let sickLeaveCount = 0;
+            let halfDayCount = 0;
+            let effectivePresentCount = 0; // P + PL + 0.5*HD
+            let effectiveAbsentCount = 0; // A + floor(SL/10)
+
+            Object.keys(attendanceData).forEach(staffId => {
+                Object.keys(attendanceData[staffId]).forEach(dateKey => {
+                    const value = attendanceData[staffId][dateKey];
+                    switch(value) {
+                        case 'P':
+                            presentCount++;
+                            effectivePresentCount++;
+                            break;
+                        case 'A':
+                            absentCount++;
+                            effectiveAbsentCount++;
+                            break;
+                        case 'PL':
+                            paidLeaveCount++;
+                            effectivePresentCount++; // PL counts as present
+                            break;
+                        case 'SL':
+                            sickLeaveCount++;
+                            // 10 SL = 1 absent (handled after loop)
+                            break;
+                        case 'HD':
+                            halfDayCount++;
+                            effectivePresentCount += 0.5; // HD counts as 0.5 present
+                            break;
+                    }
+                });
+            });
+
+            // Calculate effective absent from sick leave
+            effectiveAbsentCount += Math.floor(sickLeaveCount / 10);
+
+            document.getElementById('presentCount').textContent = effectivePresentCount.toFixed(1);
+            document.getElementById('absentCount').textContent = effectiveAbsentCount;
+            document.getElementById('leaveCount').textContent = paidLeaveCount + sickLeaveCount + halfDayCount;
+        }
+
+        // Load Attendance Data
+        function loadAttendanceData() {
+            const monthKey = `${currentYear}-${currentMonth}`;
+            const stored = localStorage.getItem('attendanceData');
+            
+            if (stored) {
+                const allData = JSON.parse(stored);
+                attendanceData = allData[monthKey] || {};
+                
+                // Update dropdown values
+                Object.keys(attendanceData).forEach(staffId => {
+                    Object.keys(attendanceData[staffId]).forEach(dateKey => {
+                        const select = document.querySelector(`select[data-staff="${staffId}"][data-date="${dateKey}"]`);
+                        if (select) {
+                            select.value = attendanceData[staffId][dateKey];
+                        }
+                    });
+                });
+            }
+        }
+
+        // Save Attendance Data
+        function saveAttendanceData() {
+            const monthKey = `${currentYear}-${currentMonth}`;
+            const allData = JSON.parse(localStorage.getItem('attendanceData')) || {};
+            
+            allData[monthKey] = attendanceData;
+            localStorage.setItem('attendanceData', JSON.stringify(allData));
+            
+            // Show success message
+            showNotification('Attendance data saved successfully!', 'success');
+        }
+
+        // Show Notification
+        function showNotification(message, type) {
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 20px 25px;
+                border-radius: 10px;
+                box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+                z-index: 10000;
+                font-weight: 600;
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                color: white;
+            `;
+            
+            if (type === 'success') {
+                notification.style.background = 'linear-gradient(135deg, #28a745, #20c997)';
+                notification.innerHTML = `<i class="fas fa-check-circle"></i> ${message}`;
+            }
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                if (document.body.contains(notification)) {
+                    document.body.removeChild(notification);
+                }
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
